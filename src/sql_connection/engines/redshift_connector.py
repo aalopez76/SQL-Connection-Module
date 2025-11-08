@@ -1,0 +1,20 @@
+from ..core.base_connector import DatabaseConnector
+try:
+    import psycopg2
+except Exception:
+    psycopg2 = None
+
+class RedshiftConnector(DatabaseConnector):
+    def __init__(self, host: str, port: int, dbname: str, user: str, password: str, sslmode: str = "require"):
+        super().__init__()
+        self.host, self.port, self.dbname = host, port, dbname
+        self.user, self.password, self.sslmode = user, password, sslmode
+
+    def connect(self) -> None:
+        if psycopg2 is None:
+            raise RuntimeError("psycopg2-binary no está instalado.")
+        self.conn = psycopg2.connect(host=self.host, port=self.port, dbname=self.dbname,
+                                     user=self.user, password=self.password, sslmode=self.sslmode)
+
+    def dsn_summary(self) -> str:
+        return f"redshift://{self.user}@{self.host}:{self.port}/{self.dbname}?sslmode={self.sslmode}"
