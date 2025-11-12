@@ -55,9 +55,10 @@ SQL-Connection-Module/
 ###  Clone and install in editable mode
 
 ```bash
-git clone [https://github.com/aalopez76/SQL-Connection-Module.git](https://github.com/aalopez76/SQL-Connection-Module.git)
+git clone https://github.com/aalopez76/SQL-Connection-Module.git
 cd SQL-Connection-Module
-pip install -e
+pip install -e .
+
 ```
 
 ###  Optional dependencies
