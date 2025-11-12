@@ -100,6 +100,13 @@ with conn:
 
 b) From Command Line (CLI)
 SQLite example
+List tables (recommended for smoke test):
+```bash
+python scripts/connect.py sqlite --path examples/toys_and_models.sqlite \
+  --query "SELECT name FROM sqlite_master WHERE type='table';"
+```
+
+Query specific data:
 ```bash
 python scripts/connect.py sqlite --path examples/toys_and_models.sqlite --query "SELECT * FROM customers LIMIT 5"
 ```
