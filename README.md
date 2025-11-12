@@ -122,23 +122,6 @@ python scripts/connect.py postgres --host localhost --port 5432 \
   --dbname mydb --user myuser --password --query "SELECT COUNT(*) FROM sales"
 ```
 
-## Testing
-
-intallation
-```bash
-$ pip install pytest
-```
-
-Run tests with pytest:
-
-```bash
-pytest -v
-```
-
-Sample smoke test includes:
-- Package import
-- SQLite read-only connection
-- Query and ping validation
 
 ## Example Notebook
 
