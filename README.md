@@ -24,7 +24,7 @@ This module abstracts those differences through a **consistent OOP API**, exposi
 
 ---
 
-## 🧱 Project Structure
+## Project Structure
 
 ```bash
 SQL-Connection-Module/
@@ -50,9 +50,9 @@ SQL-Connection-Module/
 └─ .gitignore
 ```
 
-## ⚙️ Installation
+## Installation
 
-### 📦 Clone and install in editable mode
+###  Clone and install in editable mode
 
 ```bash
 git clone [https://github.com/aalopez76/SQL-Connection-Module.git](https://github.com/aalopez76/SQL-Connection-Module.git)
@@ -60,7 +60,7 @@ cd SQL-Connection-Module
 pip install -e
 ```
 
-### 🔧 Optional dependencies
+###  Optional dependencies
 
 You can install database drivers or additional tools as extras:
 
