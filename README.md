@@ -154,3 +154,12 @@ GitHub Profile
 
 This repository serves as a template and foundation for enterprise-level data projects requiring reliable SQL connectivity.
 Its modular design, CLI integration, and OOP architecture enable scalable, maintainable, and portable database access for analytics, pipelines, and research.
+
+## ⚙️ Installation
+
+### 📦 Clone and install in editable mode
+
+```bash
+git clone [https://github.com/aalopez76/SQL-Connection-Module.git](https://github.com/aalopez76/SQL-Connection-Module.git)
+cd SQL-Connection-Module
+pip install -e .
