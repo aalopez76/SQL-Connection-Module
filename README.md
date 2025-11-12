@@ -1,36 +1,32 @@
 # SQL-Connection-Module
-Python OOP module for connecting to multiple SQL engines (SQLite, PostgreSQL, Oracle) — foundation for analytics projects.
 
+### Enterprise-Level Multi-Engine SQL Connector in Python
 
-SQL-Connection-Module
-Enterprise-Level Multi-Engine SQL Connector in Python
+`SQL-Connection-Module` is a modular, Object-Oriented Python package designed to connect and interact with multiple relational database engines (SQLite, PostgreSQL, MySQL, SQL Server, Oracle, Snowflake, Redshift) through a unified, extensible interface.
 
-SQL-Connection-Module is a modular, Object-Oriented Python package designed to connect and interact with multiple relational database engines (e.g. SQLite, PostgreSQL, MySQL, SQL Server, Oracle, Snowflake, Redshift) using a unified, extensible interface.
+It provides a **production-ready foundation** for analytics, data science, and ETL projects requiring portable, secure, and maintainable database access.
 
-It provides a production-ready foundation for analytics, data science, and ETL projects requiring portable, secure, and maintainable database access.
+---
 
-1. Overview
+## 🧭 1. Overview
 
-Modern data workflows demand flexibility — analysts and data scientists must query heterogeneous systems without rewriting connection logic.
-This module abstracts those differences through a consistent OOP API, exposing connection, execution, and reading utilities adaptable to any supported SQL backend.
+Modern data workflows demand flexibility — analysts and data scientists must query heterogeneous systems without rewriting connection logic.  
+This module abstracts those differences through a **consistent OOP API**, exposing connection, execution, and reading utilities adaptable to any supported SQL backend.
 
-Key features:
+### **Key Features**
+-  Unified connection API across engines (SQLite, PostgreSQL, MySQL, etc.)  
+-  Clean OOP architecture with extensible `DatabaseConnector` base class  
+-  Safe credential masking and context-managed connections  
+-  Optional `pandas` integration (`read_sql`, chunked reads)  
+-  Modular engine registration via lightweight factory pattern  
+-  Command-line interface (CLI) for quick testing  
+-  Tested and structured for enterprise maintainability  
 
-Unified connection API across engines (SQLite, PostgreSQL, MySQL, etc.)
+---
 
-Clean OOP architecture with extensible DatabaseConnector base class
+## 🗂️ 2. Project Structure
 
-Safe credential masking and context-managed connections
-
-Optional pandas integration (read_sql, chunked reads)
-
-Modular engine registration via lightweight factory pattern
-
-Command-line interface (CLI) for quick testing
-
-Tested and structured for enterprise maintainability
-
-2. Project Structure
+```bash
 SQL-Connection-Module/
 ├─ src/sql_connection/           # Core library (base + engine connectors)
 │  ├─ core/                      # Abstract interfaces, utilities, factory
@@ -48,111 +44,7 @@ SQL-Connection-Module/
 │
 ├─ scripts/connect.py            # Multi-engine CLI (connect, query)
 ├─ examples/connect.ipynb        # Jupyter demo – read-only example
-├─ examples/connect.py           # Equivalent Python script (CLI-friendly)
 ├─ tests/test_smoke.py           # Basic unit and integration tests
 ├─ pyproject.toml                # Project metadata and dependencies
 ├─ LICENSE                       # MIT License
 └─ .gitignore
-
-3. Installation
-Clone and install in editable mode
-git clone https://github.com/aalopez76/SQL-Connection-Module.git
-cd SQL-Connection-Module
-pip install -e .
-
-Optional dependencies
-
-You can install database drivers or additional tools as extras:
-
-pip install -e .[pandas]          # For DataFrame support
-pip install -e .[postgres]        # For PostgreSQL
-pip install -e .[mysql]           # For MySQL / MariaDB
-pip install -e .[mssql]           # For SQL Server (requires ODBC driver)
-pip install -e .[oracle]          # For Oracle
-pip install -e .[snowflake]       # For Snowflake
-pip install -e .[dev]             # For development (pytest, linting)
-
-4. Usage
-a. From Python
-from sql_connection import get_connector
-
-conn = get_connector("sqlite", path="examples/toys_and_models.sqlite")
-
-with conn:
-    print("Connected:", conn.dsn_summary())
-    print("Ping:", conn.ping())
-    df = conn.read_sql("SELECT customerName, country FROM customers LIMIT 5;")
-    print(df)
-
-b. From Command Line (CLI)
-# SQLite example
-sql-conn sqlite --path examples/toys_and_models.sqlite --query "SELECT * FROM customers LIMIT 5"
-
-# PostgreSQL example
-sql-conn postgres --host localhost --port 5432 \
-  --dbname mydb --user myuser --password --query "SELECT COUNT(*) FROM sales"
-
-5. Testing
-
-Run tests with pytest:
-
-pytest -v
-
-
-Sample smoke test includes:
-
-Package import
-
-SQLite read-only connection
-
-Query and ping validation
-
-6. Example Notebook
-
-Open examples/connect.ipynb
- to explore:
-
-Connecting to SQLite
-
-Listing tables
-
-Querying and filtering data
-
-Parameterized SQL examples
-
-The notebook demonstrates how this module integrates easily into analytics workflows, allowing data scientists to query, explore, and visualize data programmatically without switching tools.
-
-7. Design Principles
-
-OOP architecture: promotes reuse and extension across database types.
-
-Factory pattern: decouples engine selection from implementation.
-
-Error safety: controlled connection lifecycle and contextual cleanup.
-
-Scalability: suitable for production ETL, dashboards, or research analysis.
-
-Read-only by default: safer for analytics environments.
-
-8. Roadmap
-Feature	Status
-SQLite, PostgreSQL connectors	✅ Stable
-MySQL, SQL Server, Oracle	⚙️ In progress
-Snowflake, Redshift support	🧩 Planned
-Connection pooling	🔜 Planned
-Async engine support (aioodbc/asyncpg)	🔜 Future milestone
-9. License
-
-This project is licensed under the MIT License — see the LICENSE
- file for details.
-
-10. Author
-
-aa lopez
-Data Scientist & Engineer
-GitHub Profile
-
-✅ Summary
-
-This repository serves as a template and foundation for enterprise-level data projects requiring reliable SQL connectivity.
-Its modular design, CLI integration, and OOP architecture enable scalable, maintainable, and portable database access for analytics, pipelines, and research.
