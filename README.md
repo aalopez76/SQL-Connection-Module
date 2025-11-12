@@ -143,26 +143,6 @@ The notebook demonstrates how this module integrates easily into analytics workf
 
 -Read-only by default: safer for analytics environments.
 
-## 🚀 Roadmap
-
-| **Feature** | **Status** |
-|--------------|------------|
-| SQLite, PostgreSQL connectors | ✅ Stable |
-| MySQL, SQL Server, Oracle | ⚙️ In progress |
-| Snowflake, Redshift support | 🧩 Planned |
-| Connection pooling | 🔜 Planned |
-| Async engine support (aioodbc/asyncpg) | 🔜 Future milestone |
-
-##License
-
-This project is licensed under the MIT License — see the LICENSE
- file for details.
-
-## Author
-
-aa lopez
-Data Scientist & Engineer
-GitHub Profile
 
 ## Summary
 
