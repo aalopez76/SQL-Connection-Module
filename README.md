@@ -124,6 +124,11 @@ python scripts/connect.py postgres --host localhost --port 5432 \
 
 ## Testing
 
+intallation
+```bash
+$ pip install pytest
+```
+
 Run tests with pytest:
 
 ```bash
