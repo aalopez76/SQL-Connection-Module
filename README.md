@@ -95,7 +95,9 @@ b) From Command Line (CLI)
 SQLite example
 ```bash
 python scripts/connect.py sqlite --path examples/toys_and_models.sqlite --query "SELECT * FROM customers LIMIT 5"
+```
 
+```bash
  PostgreSQL example
 python scripts/connect.py postgres --host localhost --port 5432 \
   --dbname mydb --user myuser --password --query "SELECT COUNT(*) FROM sales"
@@ -110,39 +112,36 @@ pytest -v
 ```
 
 Sample smoke test includes:
-
-Package import
-
-SQLite read-only connection
-
-Query and ping validation
+- Package import
+- SQLite read-only connection
+- Query and ping validation
 
 ## Example Notebook
 
 Open examples/connect.ipynb
  to explore:
 
-Connecting to SQLite
+- Connecting to SQLite
 
-Listing tables
+- Listing tables
 
-Querying and filtering data
+- Querying and filtering data
 
-Parameterized SQL examples
+- Parameterized SQL examples
 
 The notebook demonstrates how this module integrates easily into analytics workflows, allowing data scientists to query, explore, and visualize data programmatically without switching tools.
 
 ## Design Principles
 
-OOP architecture: promotes reuse and extension across database types.
+-OOP architecture: promotes reuse and extension across database types.
 
-Factory pattern: decouples engine selection from implementation.
+-Factory pattern: decouples engine selection from implementation.
 
-Error safety: controlled connection lifecycle and contextual cleanup.
+-Error safety: controlled connection lifecycle and contextual cleanup.
 
-Scalability: suitable for production ETL, dashboards, or research analysis.
+-Scalability: suitable for production ETL, dashboards, or research analysis.
 
-Read-only by default: safer for analytics environments.
+-Read-only by default: safer for analytics environments.
 
 ## Roadmap
 Feature	Status
@@ -167,28 +166,4 @@ GitHub Profile
 
 This repository serves as a template and foundation for enterprise-level data projects requiring reliable SQL connectivity.
 Its modular design, CLI integration, and OOP architecture enable scalable, maintainable, and portable database access for analytics, pipelines, and research.
-
-# SQL-Connection-Module
-🚀 **Enterprise-Level Multi-Engine SQL Connector in Python**
-
-`SQL-Connection-Module` es un paquete Python modular y Orientado a Objetos diseñado para conectar e interactuar con múltiples motores de bases de datos relacionales (SQLite, PostgreSQL, MySQL, SQL Server, Oracle, Snowflake, Redshift) a través de una interfaz unificada y extensible.
-
-Proporciona una **fundación lista para producción** para proyectos de analytics, data science, y ETL que requieren acceso a bases de datos portátil, seguro y mantenible.
-
----
-
-## 🧭 Overview
-Modern data workflows demand flexibility — analysts and data scientists must query heterogeneous systems without rewriting connection logic.
-
-Este módulo abstrae esas diferencias a través de una **API OOP consistente**, exponiendo utilidades de conexión, ejecución, y lectura adaptables a cualquier *backend* SQL compatible.
-
-### 🔑 Key Features
-* **API de conexión unificada** a través de motores (SQLite, PostgreSQL, MySQL, etc.)
-* Arquitectura OOP limpia con clase base extensible `DatabaseConnector`
-* Enmascaramiento seguro de credenciales y conexiones gestionadas por contexto
-* Integración opcional de **pandas** (`read_sql`, lecturas en *chunks*)
-* Registro modular de motores via patrón *factory* ligero
-* Interfaz de línea de comandos (**CLI**) para pruebas rápidas
-* Probado y estructurado para **mantenibilidad empresarial**
-
 
