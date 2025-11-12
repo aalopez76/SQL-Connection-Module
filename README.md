@@ -114,8 +114,9 @@ Query specific data:
 python scripts/connect.py sqlite --path examples/toys_and_models.sqlite --query "SELECT * FROM customers LIMIT 5"
 ```
 
-```bash
  PostgreSQL example
+
+```bash
 python scripts/connect.py postgres --host localhost --port 5432 \
   --dbname mydb --user myuser --password --query "SELECT COUNT(*) FROM sales"
 ```
