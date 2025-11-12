@@ -3,20 +3,19 @@ import os
 import pytest
 from sql_connection.engines.sqlite_connector import SQLiteConnector
 
-DB_PATH = os.environ.get("SQL_CONN_EXAMPLE_DB", "examples/toys_and_models.sqlite")
-ABS_DB = os.path.abspath(DB_PATH)
 
 def test_imports():
     import sql_connection  # noqa: F401
     from sql_connection import get_connector  # noqa: F401
     assert callable(get_connector)
 
+
 @pytest.mark.skipif(
-    not os.path.exists(ABS_DB),
-    reason=f"Base de ejemplo no encontrada: {ABS_DB}",
+    not os.path.exists(os.path.abspath("examples/toys_and_models.sqlite")),
+    reason="Base de ejemplo no encontrada: examples/toys_and_models.sqlite",
 )
-def test_sqlite_connection_readonly():
-    c = SQLiteConnector(ABS_DB)
+def test_sqlite_connection_readonly(example_db_path):
+    c = SQLiteConnector(example_db_path)
     c.connect()
     try:
         assert c.is_connected
@@ -26,4 +25,5 @@ def test_sqlite_connection_readonly():
     finally:
         c.close()
         assert not c.is_connected
+
 
