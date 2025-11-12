@@ -40,6 +40,7 @@ Parámetros comunes:
 
 from __future__ import annotations
 import argparse
+import sys
 from getpass import getpass
 from typing import Any
 
@@ -137,7 +138,7 @@ def _run(engine: str, args: argparse.Namespace) -> int:
         pwd = _password_if_flag(args)
         kw = {
             "host": args.host, "port": args.port, "dbname": args.dbname,
-            "user": args.user, "password": pwd or "",
+            "user": args.user, "password": (pwd or ""),
             "sslmode": args.sslmode,
         }
 
@@ -145,7 +146,7 @@ def _run(engine: str, args: argparse.Namespace) -> int:
         pwd = _password_if_flag(args)
         kw = {
             "host": args.host, "port": args.port, "db": args.db,
-            "user": args.user, "password": pwd or "",
+            "user": args.user, "password": (pwd or ""),
         }
 
     elif engine == "sqlserver":
@@ -155,10 +156,13 @@ def _run(engine: str, args: argparse.Namespace) -> int:
                 "driver": args.driver, "trusted_connection": True,
             }
         else:
+            if not args.user:
+                print("❌ Debes proporcionar --user o usar --trusted-connection.", file=sys.stderr)
+                return 2
             pwd = _password_if_flag(args)
-            if not (args.user and (pwd is not None or "password" in args)):
-                # si no usó --password, pedimos explícitamente
-                pwd = pwd or getpass("Password: ")
+            # si no usó --password o quedó vacío, pedimos uno explícitamente
+            if not pwd:
+                pwd = getpass("Password: ")
             kw = {
                 "server": args.server, "database": args.database,
                 "user": args.user, "password": pwd,
@@ -169,13 +173,13 @@ def _run(engine: str, args: argparse.Namespace) -> int:
         pwd = _password_if_flag(args)
         kw = {
             "host": args.host, "port": args.port, "service_name": args.service_name,
-            "user": args.user, "password": pwd or "",
+            "user": args.user, "password": (pwd or ""),
         }
 
     elif engine == "snowflake":
         pwd = _password_if_flag(args)
         kw = {
-            "account": args.account, "user": args.user, "password": pwd or "",
+            "account": args.account, "user": args.user, "password": (pwd or ""),
             "warehouse": args.warehouse, "database": args.database, "schema": args.schema,
             "role": args.role,
         }
@@ -184,11 +188,12 @@ def _run(engine: str, args: argparse.Namespace) -> int:
         pwd = _password_if_flag(args)
         kw = {
             "host": args.host, "port": args.port, "dbname": args.dbname,
-            "user": args.user, "password": pwd or "", "sslmode": args.sslmode,
+            "user": args.user, "password": (pwd or ""), "sslmode": args.sslmode,
         }
 
     else:
-        raise SystemExit(f"Motor no soportado: {engine}")
+        print(f"Motor no soportado: {engine}", file=sys.stderr)
+        return 2
 
     # Conectar y mostrar estado
     connector = get_connector(engine, **kw)
@@ -216,11 +221,14 @@ def _run(engine: str, args: argparse.Namespace) -> int:
                     if len(rows) > args.limit:
                         print(f"... ({len(rows)} filas; mostrando {args.limit})")
             except Exception as ex:
-                print(f"Error ejecutando consulta: {ex}")
+                print(f"Error ejecutando consulta: {ex}", file=sys.stderr)
                 return 2
         return 0
+    except KeyboardInterrupt:
+        print("\nInterrumpido por el usuario.", file=sys.stderr)
+        return 130
     except Exception as e:
-        print(f"❌ Error al conectar: {e}")
+        print(f"❌ Error al conectar: {e}", file=sys.stderr)
         return 1
     finally:
         try:
@@ -247,8 +255,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    exit(_run(args.engine, args))
+    rc = _run(args.engine, args)
+    sys.exit(rc)
 
 
 if __name__ == "__main__":
     main()
+
