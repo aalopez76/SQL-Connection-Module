@@ -48,7 +48,6 @@ SQL-Connection-Module/
 ├─ pyproject.toml                # Project metadata and dependencies
 ├─ LICENSE                       # MIT License
 └─ .gitignore
-``` **<-- CIERRE CORREGIDO**
 ```
 
 ## ⚙️ Installation
