@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Generator
+from typing import Generator, Any
 
 try:
     import pandas as pd
@@ -39,7 +39,7 @@ class DatabaseConnector(ABC):
     @abstractmethod
     def dsn_summary(self) -> str: ...
 
-    # utilitarios si hay pandas
+    # -------- Lectura con pandas --------
     def read_sql(self, sql: str, params: dict | None = None):
         if pd is None:
             raise RuntimeError("pandas no está instalado.")
@@ -47,14 +47,16 @@ class DatabaseConnector(ABC):
             raise RuntimeError("No hay conexión activa.")
         return pd.read_sql(sql, self.conn, params=params or {})
 
-    def read_sql_chunks(self, sql: str, params: dict | None = None, chunksize: int = 100_000
-                        ) -> Generator["pd.DataFrame", None, None]:
+    def read_sql_chunks(
+        self, sql: str, params: dict | None = None, chunksize: int = 100_000
+    ) -> Generator["pd.DataFrame", None, None]:
         if pd is None:
             raise RuntimeError("pandas no está instalado.")
         if not self.conn:
             raise RuntimeError("No hay conexión activa.")
         return pd.read_sql(sql, self.conn, params=params or {}, chunksize=chunksize)
 
+    # -------- DDL/DML sin retorno --------
     def execute(self, sql: str, params: dict | None = None) -> None:
         if not self.conn:
             raise RuntimeError("No hay conexión activa.")
@@ -71,6 +73,22 @@ class DatabaseConnector(ABC):
             except Exception:
                 pass
 
+    # -------- Solo lectura con retorno de filas (tu helper) --------
+    def query(self, sql: str, params: dict | None = None) -> list[tuple[Any, ...]]:
+        if not self.conn:
+            raise RuntimeError("No hay conexión activa.")
+        cur = self.conn.cursor()
+        try:
+            cur.execute(sql, params or {})
+            rows = cur.fetchall()
+            return rows
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
+
+    # -------- Ping por defecto --------
     def ping(self) -> bool:
         try:
             cur = self.conn.cursor()
@@ -80,3 +98,4 @@ class DatabaseConnector(ABC):
             return True
         except Exception:
             return False
+
