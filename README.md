@@ -24,7 +24,7 @@ This module abstracts those differences through a **consistent OOP API**, exposi
 
 ---
 
-## Project Structure
+## 🧱 Project Structure
 
 ```bash
 SQL-Connection-Module/
@@ -48,29 +48,38 @@ SQL-Connection-Module/
 ├─ pyproject.toml                # Project metadata and dependencies
 ├─ LICENSE                       # MIT License
 └─ .gitignore
+``` **<-- CIERRE CORREGIDO**
 ```
 
----
-## Installation
-Clone and install in editable mode
-git clone https://github.com/aalopez76/SQL-Connection-Module.git
-cd SQL-Connection-Module
-pip install -e .
+## ⚙️ Installation
 
-Optional dependencies
+### 📦 Clone and install in editable mode
+
+```bash
+git clone [https://github.com/aalopez76/SQL-Connection-Module.git](https://github.com/aalopez76/SQL-Connection-Module.git)
+cd SQL-Connection-Module
+pip install -e
+```
+
+### 🔧 Optional dependencies
 
 You can install database drivers or additional tools as extras:
 
-pip install -e .[pandas]          # For DataFrame support
-pip install -e .[postgres]        # For PostgreSQL
-pip install -e .[mysql]           # For MySQL / MariaDB
-pip install -e .[mssql]           # For SQL Server (requires ODBC driver)
-pip install -e .[oracle]          # For Oracle
-pip install -e .[snowflake]       # For Snowflake
-pip install -e .[dev]             # For development (pytest, linting)
+```bash
+pip install -e .[pandas]       # For DataFrame support
+pip install -e .[postgres]     # For PostgreSQL
+pip install -e .[mysql]        # For MySQL / MariaDB
+pip install -e .[mssql]        # For SQL Server (requires ODBC driver)
+pip install -e .[oracle]       # For Oracle
+pip install -e .[snowflake]    # For Snowflake
+pip install -e .[dev]          # For development (pytest, linting)
+```
+
+
 
 ## Usage Examples
 a) From Python
+```bash
 from sql_connection import get_connector
 
 conn = get_connector("sqlite", path="examples/toys_and_models.sqlite")
@@ -80,21 +89,25 @@ with conn:
     print("Ping:", conn.ping())
     df = conn.read_sql("SELECT customerName, country FROM customers LIMIT 5;")
     print(df)
+```
 
 b) From Command Line (CLI)
 SQLite example
+```bash
 python scripts/connect.py sqlite --path examples/toys_and_models.sqlite --query "SELECT * FROM customers LIMIT 5"
 
  PostgreSQL example
 python scripts/connect.py postgres --host localhost --port 5432 \
   --dbname mydb --user myuser --password --query "SELECT COUNT(*) FROM sales"
+```
 
 ## Testing
 
 Run tests with pytest:
 
+```bash
 pytest -v
-
+```
 
 Sample smoke test includes:
 
@@ -178,54 +191,4 @@ Este módulo abstrae esas diferencias a través de una **API OOP consistente**, 
 * Interfaz de línea de comandos (**CLI**) para pruebas rápidas
 * Probado y estructurado para **mantenibilidad empresarial**
 
----
 
-## 🧱 Project Structure
-
-```bash
-SQL-Connection-Module/
-├─ src/sql_connection/           # Core library (base + engine connectors)
-│  ├─ core/                      # Abstract interfaces, utilities, factory
-│  │  ├─ base_connector.py
-│  │  ├─ factory.py
-│  │  └─ utils.py
-│  └─ engines/                   # Implementations per SQL engine
-│     ├─ sqlite_connector.py
-│     ├─ postgres_connector.py
-│     ├─ mysql_connector.py
-│     ├─ sqlserver_connector.py
-│     ├─ oracle_connector.py
-│     ├─ snowflake_connector.py
-│     └─ redshift_connector.py
-│
-├─ scripts/connect.py            # Multi-engine CLI (connect, query)
-├─ examples/connect.ipynb        # Jupyter demo – read-only example
-├─ tests/test_smoke.py           # Basic unit and integration tests
-├─ pyproject.toml                # Project metadata and dependencies
-├─ LICENSE                       # MIT License
-└─ .gitignore
-``` **<-- CIERRE CORREGIDO**
-```
-
-## ⚙️ Installation
-
-### 📦 Clone and install in editable mode
-
-```bash
-git clone [https://github.com/aalopez76/SQL-Connection-Module.git](https://github.com/aalopez76/SQL-Connection-Module.git)
-cd SQL-Connection-Module
-pip install -e
-```
-
-### 🔧 Optional dependencies
-
-You can install database drivers or additional tools as extras:
-
-```bash
-pip install -e .[pandas]       # For DataFrame support
-pip install -e .[postgres]     # For PostgreSQL
-pip install -e .[mysql]        # For MySQL / MariaDB
-pip install -e .[mssql]        # For SQL Server (requires ODBC driver)
-pip install -e .[oracle]       # For Oracle
-pip install -e .[snowflake]    # For Snowflake
-pip install -e .[dev]          # For development (pytest, linting)
