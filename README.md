@@ -48,11 +48,11 @@ SQL-Connection-Module/
 ├─ pyproject.toml                # Project metadata and dependencies
 ├─ LICENSE                       # MIT License
 └─ .gitignore
-
+```
 
 ---
 ## Installation
-📦 Clone and install in editable mode
+Clone and install in editable mode
 git clone https://github.com/aalopez76/SQL-Connection-Module.git
 cd SQL-Connection-Module
 pip install -e .
