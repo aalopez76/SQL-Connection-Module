@@ -61,6 +61,13 @@ pip install -e .
 
 ```
 
+###  Verify installation
+
+Run a quick import test to confirm everything is working:
+```bash
+python -c "from sql_connection import get_connector; print('Import OK')"
+```
+
 ###  Optional dependencies
 
 You can install database drivers or additional tools as extras:
