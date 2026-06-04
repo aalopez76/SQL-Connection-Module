@@ -55,6 +55,9 @@ dev = [
   "build>=1.0",
 ]
 
+[project.scripts]
+sql-connect = "sql_connection.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/aalopez76/SQL-Connection-Module"
 Repository = "https://github.com/aalopez76/SQL-Connection-Module"
