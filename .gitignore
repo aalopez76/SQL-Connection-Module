@@ -205,3 +205,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# --- Internal / AI-assisted scaffolding (local-only, not published) ---
+# Publishing policy: the public repo ships only the product. These process and
+# AI-collaboration artifacts stay on disk so the local workflow keeps working,
+# but are not published. (docs/RELEASE.md is intentionally kept public.)
+CLAUDE.md
+handoff.md
+handoff/
+docs/AUDIT.md
+docs/REFACTOR_PLAN.md
+*.pdf

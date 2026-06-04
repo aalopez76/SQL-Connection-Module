@@ -242,3 +242,8 @@ suite is green on a minimal install. The example SQLite database
 This repository serves as a template and foundation for enterprise-level data projects requiring reliable SQL connectivity.
 Its modular design, CLI integration, and OOP architecture enable scalable, maintainable, and portable database access for analytics, pipelines, and research.
 
+## Credits
+
+Parts of this project — the test suite, packaging, CI and several refactors — were developed
+with AI-assisted development tooling.
+
