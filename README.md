@@ -29,6 +29,9 @@ This module abstracts those differences through a **consistent OOP API**, exposi
 ```bash
 SQL-Connection-Module/
 ├─ src/sql_connection/           # Core library (base + engine connectors)
+│  ├─ __init__.py                # Public exports + __version__
+│  ├─ py.typed                   # PEP 561 typing marker
+│  ├─ cli.py                     # CLI implementation (entry point: sql-connect)
 │  ├─ core/                      # Abstract interfaces, utilities, factory
 │  │  ├─ base_connector.py
 │  │  ├─ factory.py
@@ -42,10 +45,16 @@ SQL-Connection-Module/
 │     ├─ snowflake_connector.py
 │     └─ redshift_connector.py
 │
-├─ scripts/connect.py            # Multi-engine CLI (connect, query)
+├─ scripts/connect.py            # Backward-compatible CLI wrapper
 ├─ examples/connect.ipynb        # Jupyter demo – read-only example
-├─ tests/test_smoke.py           # Basic unit and integration tests
-├─ pyproject.toml                # Project metadata and dependencies
+├─ tests/                        # pytest suite (smoke, factory, base, masking, cli, errors)
+├─ docs/                         # AUDIT.md, REFACTOR_PLAN.md
+├─ .github/workflows/ci.yml      # CI: ruff + mypy + pytest (Python 3.10–3.12)
+├─ Makefile                      # install / test / lint / format / typecheck / build / ...
+├─ requirements.lock             # Pinned dependency set (pip-tools)
+├─ .env.example                  # Per-engine credential template
+├─ pyproject.toml                # Project metadata, extras, tooling config
+├─ CLAUDE.md                     # Repo guide for Claude Code / contributors
 ├─ LICENSE                       # MIT License
 └─ .gitignore
 ```
@@ -124,6 +133,10 @@ with conn:
 ```
 
 b) From Command Line (CLI)
+
+After installation the `sql-connect` command is available and is equivalent to
+`python scripts/connect.py` (e.g. `sql-connect sqlite --path ... --query "..."`).
+Add `--verbose` for debug logging.
 
 SQLite example
 
