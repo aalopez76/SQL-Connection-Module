@@ -52,41 +52,66 @@ SQL-Connection-Module/
 
 ## Installation
 
+The core package has **no hard runtime dependencies** — `pandas` and the database
+drivers are optional *extras*. Install only what you need.
+
 ###  Clone and install in editable mode
 
 ```bash
 git clone https://github.com/aalopez76/SQL-Connection-Module.git
 cd SQL-Connection-Module
-pip install -e .
 
+# (recommended) create an isolated virtual environment
+python -m venv .venv
+# Windows:  .venv\Scripts\activate
+# Unix:     source .venv/bin/activate
+
+pip install -e .
 ```
 
 ###  Verify installation
 
 Run a quick import test to confirm everything is working:
 ```bash
-python -c "from sql_connection import get_connector; print('Import OK')"
+python -c "from sql_connection import get_connector, __version__; print('Import OK', __version__)"
 ```
 
-###  Optional dependencies
+###  Optional dependencies (extras)
 
-You can install database drivers or additional tools as extras:
+Every extra below is declared in `pyproject.toml`, so these commands work as-is:
 
 ```bash
-pip install -e .[pandas]       # For DataFrame support
-pip install -e .[postgres]     # For PostgreSQL
-pip install -e .[mysql]        # For MySQL / MariaDB
-pip install -e .[mssql]        # For SQL Server (requires ODBC driver)
-pip install -e .[oracle]       # For Oracle
-pip install -e .[snowflake]    # For Snowflake
-pip install -e .[dev]          # For development (pytest, linting)
+pip install -e ".[pandas]"      # DataFrame support (read_sql / read_sql_chunks)
+pip install -e ".[postgres]"    # PostgreSQL  (psycopg2-binary)
+pip install -e ".[mysql]"       # MySQL / MariaDB  (pymysql)
+pip install -e ".[mssql]"       # SQL Server  (pyodbc — requires an ODBC driver)
+pip install -e ".[oracle]"      # Oracle  (oracledb)
+pip install -e ".[snowflake]"   # Snowflake  (snowflake-connector-python)
+pip install -e ".[redshift]"    # Amazon Redshift  (psycopg2-binary)
+pip install -e ".[all]"         # All drivers + pandas
+pip install -e ".[dev]"         # Dev toolchain (pytest, pytest-cov, ruff, mypy, ...)
+```
+
+###  Reproducible environment
+
+A fully pinned dependency set is committed in `requirements.lock` (generated with
+`pip-tools`). To recreate the exact development environment:
+
+```bash
+pip install -r requirements.lock
+```
+
+Regenerate it after changing dependencies:
+
+```bash
+pip-compile --extra dev --extra all --output-file requirements.lock pyproject.toml
 ```
 
 
 
 ## Usage Examples
 a) From Python
-```bash
+```python
 from sql_connection import get_connector
 
 conn = get_connector("sqlite", path="examples/toys_and_models.sqlite")
@@ -137,6 +162,31 @@ Open examples/connect.ipynb
 - Parameterized SQL examples
 
 The notebook demonstrates how this module integrates easily into analytics workflows, allowing data scientists to query, explore, and visualize data programmatically without switching tools.
+
+## Configuration & Credentials
+
+Never hard-code credentials. Copy `.env.example` to `.env` (git-ignored) and load the
+values from the environment in your own code or pass them to `get_connector(...)`:
+
+```bash
+cp .env.example .env   # then edit with your real values
+```
+
+Passwords are always **masked** in `dsn_summary()` output, so connection summaries are
+safe to log.
+
+## Running the Tests
+
+```bash
+pip install -e ".[dev,pandas]"   # test deps (add the driver extras you want to exercise)
+pytest                            # run the suite
+pytest --cov=sql_connection       # with coverage
+```
+
+Engine tests for drivers that are not installed are **skipped automatically**, so the
+suite is green on a minimal install. The example SQLite database
+(`examples/toys_and_models.sqlite`) is committed as a small, self-contained test fixture
+(no external data tooling such as DVC is required for this library).
 
 ## Design Principles
 
