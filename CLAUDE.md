@@ -24,8 +24,10 @@ src/sql_connection/
   py.typed               # PEP 561 typing marker
   cli.py                 # CLI implementation (entry point: sql-connect)
   core/
-    base_connector.py    # DatabaseConnector ABC (lifecycle, read_sql, query, execute, ping)
+    base_connector.py    # DatabaseConnector ABC (lifecycle, read_sql, query, execute,
+                         #   ping, connect_with_retries)
     factory.py           # get_connector(engine, **kwargs) + database= alias normalization
+    pool.py              # ConnectionPool (thread-safe, engine-agnostic)
     utils.py             # mask_secret()
   engines/               # one connector module per engine
 scripts/connect.py       # thin backward-compatible CLI wrapper

@@ -176,6 +176,29 @@ Open examples/connect.ipynb
 
 The notebook demonstrates how this module integrates easily into analytics workflows, allowing data scientists to query, explore, and visualize data programmatically without switching tools.
 
+## Resilience & Pooling
+
+For pipeline/production use, connections can be retried with exponential backoff and
+reused through a small, engine-agnostic pool:
+
+```python
+from sql_connection import get_connector, ConnectionPool
+
+# Retry transient connection failures
+conn = get_connector("postgres", host="db", database="app", user="u", password="p")
+conn.connect_with_retries(attempts=5, base_delay=0.5, backoff=2.0)
+
+# Reuse connections via a thread-safe pool
+pool = ConnectionPool(
+    lambda: get_connector("sqlite", path="app.sqlite"),
+    max_size=8,
+    pre_ping=True,   # validate idle connections on checkout
+)
+with pool.connection() as c:
+    rows = c.query("SELECT 1")
+pool.closeall()
+```
+
 ## Configuration & Credentials
 
 Never hard-code credentials. Copy `.env.example` to `.env` (git-ignored) and load the

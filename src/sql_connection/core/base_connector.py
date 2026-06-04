@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from typing import Any, Literal
@@ -51,6 +52,62 @@ class DatabaseConnector(ABC):
     def connect(self) -> None:
         """Establish an underlying driver connection and assign it to `self.conn`."""
         ...
+
+    def connect_with_retries(
+        self,
+        attempts: int = 3,
+        base_delay: float = 0.5,
+        backoff: float = 2.0,
+        exceptions: tuple[type[BaseException], ...] = (Exception,),
+    ) -> DatabaseConnector:
+        """
+        Call ``connect()`` with exponential backoff between attempts.
+
+        Useful for transient failures (network blips, a database still warming up)
+        in pipeline/production contexts. Opt-in: ``connect()`` itself is unchanged.
+
+        Parameters
+        ----------
+        attempts : int
+            Total number of attempts (>= 1).
+        base_delay : float
+            Initial delay (seconds) before the first retry.
+        backoff : float
+            Multiplier applied to the delay after each failed attempt.
+        exceptions : tuple[type[BaseException], ...]
+            Exception types that trigger a retry. Others propagate immediately.
+
+        Returns
+        -------
+        DatabaseConnector
+            ``self``, connected.
+
+        Raises
+        ------
+        ValueError
+            If ``attempts`` < 1.
+        Exception
+            The last error raised by ``connect()`` once attempts are exhausted.
+        """
+        if attempts < 1:
+            raise ValueError("attempts must be >= 1")
+        delay = base_delay
+        last_exc: BaseException | None = None
+        for attempt in range(1, attempts + 1):
+            try:
+                self.connect()
+                return self
+            except exceptions as exc:
+                last_exc = exc
+                logger.warning(
+                    "connect attempt %d/%d failed: %s", attempt, attempts, exc
+                )
+                if attempt == attempts:
+                    break
+                time.sleep(delay)
+                delay *= backoff
+        assert last_exc is not None
+        raise last_exc
 
     def close(self) -> None:
         """Close the underlying connection if open."""
