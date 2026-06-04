@@ -1,6 +1,7 @@
 # src/sql_connection/core/factory.py
 from __future__ import annotations
 
+import warnings
 from typing import Any, Literal
 
 from ..engines.sqlite_connector import SQLiteConnector
@@ -21,6 +22,33 @@ EngineName = Literal[
     "snowflake",
     "redshift",
 ]
+
+
+# Engines whose connector expects a legacy database-name kwarg. The unified,
+# recommended kwarg across all engines is ``database`` (already native to SQL Server).
+_LEGACY_DB_KWARG = {"mysql": "db", "postgres": "dbname", "redshift": "dbname"}
+
+
+def _normalize_database_kwarg(engine: str, kwargs: dict[str, Any]) -> None:
+    """
+    Accept a unified ``database=`` argument across engines.
+
+    Legacy per-engine names (``db`` for MySQL, ``dbname`` for Postgres/Redshift)
+    keep working but emit a ``DeprecationWarning``. When ``database`` is supplied it
+    is mapped to the kwarg the concrete connector expects and takes precedence.
+    """
+    legacy = _LEGACY_DB_KWARG.get(engine)
+    if legacy is None:
+        return  # sqlite (no db), sqlserver (already 'database'), oracle (service_name)
+    if legacy in kwargs:
+        warnings.warn(
+            f"Passing '{legacy}=' to get_connector('{engine}', ...) is deprecated; "
+            "use 'database=' instead.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+    if "database" in kwargs:
+        kwargs[legacy] = kwargs.pop("database")
 
 
 def _need(kwargs: dict[str, Any], *names: str) -> list[Any]:
@@ -62,6 +90,10 @@ def get_connector(engine: EngineName, **kwargs: Any) -> DatabaseConnector:
     normalizes a few optional ones (e.g., ports, timeouts). Secrets should be
     passed in via kwargs; the connectors are responsible for masking secrets in
     `dsn_summary()`.
+
+    The recommended, unified way to name the database is ``database=`` for every
+    engine. The legacy per-engine names (``db`` for MySQL, ``dbname`` for
+    Postgres/Redshift) still work but emit a ``DeprecationWarning``.
 
     Parameters
     ----------
@@ -109,6 +141,7 @@ def get_connector(engine: EngineName, **kwargs: Any) -> DatabaseConnector:
         If the engine is not supported.
     """
     e = engine.lower()
+    _normalize_database_kwarg(e, kwargs)
 
     # ---- SQLite ------------------------------------------------------------
     if e == "sqlite":
