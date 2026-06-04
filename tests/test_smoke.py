@@ -1,6 +1,8 @@
 # tests/test_smoke.py
 import os
+
 import pytest
+
 from sql_connection.engines.sqlite_connector import SQLiteConnector
 
 

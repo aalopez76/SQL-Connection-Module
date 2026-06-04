@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 class PostgresConnector(DatabaseConnector):
     def __init__(self, host: str, port: int, dbname: str,
                  user: str, password: str,
-                 sslmode: Optional[str] = None, connect_timeout: int = 10):
+                 sslmode: str | None = None, connect_timeout: int = 10):
         super().__init__()
         self.host, self.port, self.dbname = host, port, dbname
         self.user, self.password = user, password

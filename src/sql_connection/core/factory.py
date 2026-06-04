@@ -4,13 +4,13 @@ from __future__ import annotations
 import warnings
 from typing import Any, Literal
 
-from ..engines.sqlite_connector import SQLiteConnector
-from ..engines.postgres_connector import PostgresConnector
 from ..engines.mysql_connector import MySQLConnector
-from ..engines.sqlserver_connector import SQLServerConnector
 from ..engines.oracle_connector import OracleConnector
-from ..engines.snowflake_connector import SnowflakeConnector
+from ..engines.postgres_connector import PostgresConnector
 from ..engines.redshift_connector import RedshiftConnector
+from ..engines.snowflake_connector import SnowflakeConnector
+from ..engines.sqlite_connector import SQLiteConnector
+from ..engines.sqlserver_connector import SQLServerConnector
 from .base_connector import DatabaseConnector
 
 EngineName = Literal[
@@ -170,18 +170,29 @@ def get_connector(engine: EngineName, **kwargs: Any) -> DatabaseConnector:
         driver = kwargs.get("driver", "ODBC Driver 17 for SQL Server")
         trusted = bool(kwargs.get("trusted_connection", False))
         if trusted:
-            return SQLServerConnector(server=server, database=database, trusted_connection=True, driver=driver)
+            return SQLServerConnector(
+                server=server, database=database, trusted_connection=True, driver=driver
+            )
         user = kwargs.get("user")
         password = kwargs.get("password")
         if not (user and password):
-            raise KeyError("For SQL Server without 'trusted_connection', both 'user' and 'password' are required.")
-        return SQLServerConnector(server=server, database=database, user=user, password=password, driver=driver)
+            raise KeyError(
+                "For SQL Server without 'trusted_connection', both 'user' and 'password' "
+                "are required."
+            )
+        return SQLServerConnector(
+            server=server, database=database, user=user, password=password, driver=driver
+        )
 
     # ---- Oracle ------------------------------------------------------------
     if e == "oracle":
-        host, service_name, user, password = _need(kwargs, "host", "service_name", "user", "password")
+        host, service_name, user, password = _need(
+            kwargs, "host", "service_name", "user", "password"
+        )
         port = int(kwargs.get("port", 1521))
-        return OracleConnector(host=host, port=port, service_name=service_name, user=user, password=password)
+        return OracleConnector(
+            host=host, port=port, service_name=service_name, user=user, password=password
+        )
 
     # ---- Snowflake ---------------------------------------------------------
     if e == "snowflake":
@@ -204,7 +215,9 @@ def get_connector(engine: EngineName, **kwargs: Any) -> DatabaseConnector:
         host, dbname, user, password = _need(kwargs, "host", "dbname", "user", "password")
         port = int(kwargs.get("port", 5439))
         sslmode = kwargs.get("sslmode", "require")
-        return RedshiftConnector(host=host, port=port, dbname=dbname, user=user, password=password, sslmode=sslmode)
+        return RedshiftConnector(
+            host=host, port=port, dbname=dbname, user=user, password=password, sslmode=sslmode
+        )
 
     # -----------------------------------------------------------------------
     raise ValueError(f"Unsupported engine: {engine!r}")

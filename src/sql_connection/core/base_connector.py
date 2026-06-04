@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Generator, Optional
+from collections.abc import Generator
+from typing import Any, Literal
 
 try:
     import pandas as pd  # type: ignore
@@ -34,11 +35,11 @@ class DatabaseConnector(ABC):
     # ----------------------------
     # Context manager integration
     # ----------------------------
-    def __enter__(self) -> "DatabaseConnector":
+    def __enter__(self) -> DatabaseConnector:
         self.connect()
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> Literal[False]:
         self.close()
         # Returning False propagates any exception to the caller
         return False
@@ -83,7 +84,7 @@ class DatabaseConnector(ABC):
     # ----------------------------
     # Pandas-based reads (optional)
     # ----------------------------
-    def read_sql(self, sql: str, params: Optional[dict] = None):
+    def read_sql(self, sql: str, params: dict | None = None):
         """
         Read a full result set into a pandas DataFrame.
 
@@ -98,23 +99,25 @@ class DatabaseConnector(ABC):
     def read_sql_chunks(
         self,
         sql: str,
-        params: Optional[dict] = None,
+        params: dict | None = None,
         chunksize: int = 100_000,
-    ) -> Generator["pd.DataFrame", None, None]:
+    ) -> Generator[pd.DataFrame, None, None]:
         """
         Stream results into chunked pandas DataFrames.
 
         Useful for large result sets that cannot fit into memory.
         """
         if pd is None:
-            raise RuntimeError("pandas is not installed. Install `pandas` to use read_sql_chunks().")
+            raise RuntimeError(
+                "pandas is not installed. Install `pandas` to use read_sql_chunks()."
+            )
         self._ensure_connected()
         return pd.read_sql(sql, self.conn, params=params or {}, chunksize=chunksize)
 
     # ----------------------------
     # Executing statements (no rows)
     # ----------------------------
-    def execute(self, sql: str, params: Optional[dict] = None) -> None:
+    def execute(self, sql: str, params: dict | None = None) -> None:
         """
         Execute a DDL/DML statement (no rows expected).
 
@@ -140,7 +143,7 @@ class DatabaseConnector(ABC):
     # ----------------------------
     # Read-only query returning rows
     # ----------------------------
-    def query(self, sql: str, params: Optional[dict] = None) -> list[tuple[Any, ...]]:
+    def query(self, sql: str, params: dict | None = None) -> list[tuple[Any, ...]]:
         """
         Execute a read-only query and return all rows as a list of tuples.
 

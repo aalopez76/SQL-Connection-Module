@@ -27,9 +27,9 @@ import argparse
 import logging
 import sys
 from getpass import getpass
-from typing import Any
+from typing import Any, cast
 
-from .core.factory import get_connector
+from .core.factory import EngineName, get_connector
 
 logger = logging.getLogger("sql_connection.cli")
 
@@ -271,7 +271,7 @@ def _run(engine: str, args: argparse.Namespace) -> int:
         return 2
 
     # Connect and optionally execute a read-only query
-    connector = get_connector(engine, **kw)
+    connector = get_connector(cast(EngineName, engine), **kw)
     try:
         connector.connect()
         print(

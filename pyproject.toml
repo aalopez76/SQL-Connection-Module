@@ -86,6 +86,11 @@ src = ["src", "tests", "scripts"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# Engine error tests intentionally assert that connect() raises *some* error,
+# since the concrete exception type varies per driver.
+"tests/test_errors.py" = ["B017"]
+
 [tool.mypy]
 python_version = "3.10"
 ignore_missing_imports = true

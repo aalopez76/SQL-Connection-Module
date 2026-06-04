@@ -1,9 +1,8 @@
 # tests/test_errors.py
-import os
 import pytest
 
-from sql_connection.engines.sqlite_connector import SQLiteConnector
 from conftest import have_module
+from sql_connection.engines.sqlite_connector import SQLiteConnector
 
 
 def test_sqlite_connect_invalid_directory(tmp_path):
