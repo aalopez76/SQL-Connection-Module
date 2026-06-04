@@ -1,4 +1,6 @@
 # src/sql_connection/engines/oracle_connector.py
+import logging
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -6,6 +8,8 @@ try:
     import oracledb
 except Exception:
     oracledb = None
+
+logger = logging.getLogger(__name__)
 
 
 class OracleConnector(DatabaseConnector):
@@ -22,6 +26,7 @@ class OracleConnector(DatabaseConnector):
             raise RuntimeError("oracledb no está instalado.")
         dsn = oracledb.makedsn(self.host, self.port, service_name=self.service_name)
         self.conn = oracledb.connect(user=self.user, password=self.password, dsn=dsn)
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         return (

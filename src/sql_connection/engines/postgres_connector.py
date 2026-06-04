@@ -1,4 +1,6 @@
+import logging
 from typing import Optional
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -7,6 +9,8 @@ try:
     import psycopg2.extras
 except Exception:
     psycopg2 = None
+
+logger = logging.getLogger(__name__)
 
 
 class PostgresConnector(DatabaseConnector):
@@ -30,6 +34,7 @@ class PostgresConnector(DatabaseConnector):
         if self.sslmode:
             kwargs["sslmode"] = self.sslmode
         self.conn = psycopg2.connect(**kwargs)
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         ssl = f"?sslmode={self.sslmode}" if self.sslmode else ""

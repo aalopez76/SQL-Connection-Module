@@ -1,3 +1,5 @@
+import logging
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -5,6 +7,8 @@ try:
     import pyodbc
 except Exception:
     pyodbc = None
+
+logger = logging.getLogger(__name__)
 
 
 class SQLServerConnector(DatabaseConnector):
@@ -39,6 +43,7 @@ class SQLServerConnector(DatabaseConnector):
                 f"DATABASE={self.database};UID={self.user};PWD={self.password};"
             )
         self.conn = pyodbc.connect(conn_str)
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         if self.trusted:

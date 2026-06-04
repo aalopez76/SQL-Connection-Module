@@ -1,3 +1,5 @@
+import logging
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -5,6 +7,8 @@ try:
     import psycopg2
 except Exception:
     psycopg2 = None
+
+logger = logging.getLogger(__name__)
 
 
 class RedshiftConnector(DatabaseConnector):
@@ -32,6 +36,7 @@ class RedshiftConnector(DatabaseConnector):
             password=self.password,
             sslmode=self.sslmode,
         )
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         return (

@@ -1,3 +1,5 @@
+import logging
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -5,6 +7,8 @@ try:
     import pymysql
 except Exception:
     pymysql = None
+
+logger = logging.getLogger(__name__)
 
 
 class MySQLConnector(DatabaseConnector):
@@ -24,6 +28,7 @@ class MySQLConnector(DatabaseConnector):
             password=self.password,
             charset="utf8mb4",
         )
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         return (

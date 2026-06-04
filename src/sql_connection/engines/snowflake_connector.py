@@ -1,3 +1,5 @@
+import logging
+
 from ..core.base_connector import DatabaseConnector
 from ..core.utils import mask_secret
 
@@ -5,6 +7,8 @@ try:
     import snowflake.connector as sf
 except Exception:
     sf = None
+
+logger = logging.getLogger(__name__)
 
 
 class SnowflakeConnector(DatabaseConnector):
@@ -37,6 +41,7 @@ class SnowflakeConnector(DatabaseConnector):
         if self.role:
             kwargs["role"] = self.role
         self.conn = sf.connect(**kwargs)
+        logger.debug("Connected: %s", self.dsn_summary())
 
     def dsn_summary(self) -> str:
         qs = f"?warehouse={self.warehouse}"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Generator, Optional
 
@@ -7,6 +8,8 @@ try:
     import pandas as pd  # type: ignore
 except Exception:  # pandas is optional
     pd = None
+
+logger = logging.getLogger(__name__)
 
 
 class DatabaseConnector(ABC):
@@ -55,6 +58,7 @@ class DatabaseConnector(ABC):
                 self.conn.close()
             finally:
                 self.conn = None
+                logger.debug("%s connection closed", type(self).__name__)
 
     @property
     def is_connected(self) -> bool:
@@ -118,6 +122,7 @@ class DatabaseConnector(ABC):
         commit errors (e.g., autocommit modes) without failing the call.
         """
         self._ensure_connected()
+        logger.debug("execute: %s", sql)
         cur = self.conn.cursor()
         try:
             cur.execute(sql, params or {})
@@ -142,6 +147,7 @@ class DatabaseConnector(ABC):
         For tabular analysis, prefer `read_sql()` when pandas is available.
         """
         self._ensure_connected()
+        logger.debug("query: %s", sql)
         cur = self.conn.cursor()
         try:
             cur.execute(sql, params or {})
