@@ -6,6 +6,10 @@
 
 It provides a **production-ready foundation** for analytics, data science, and ETL projects requiring portable, secure, and maintainable database access.
 
+> 🔌 **In production:** this connector powers the data engine of the
+> [**Executive KPI Dashboard**](https://github.com/aalopez76/Executive_Dashboard)
+> ([live demo](https://huggingface.co/spaces/aalpzp/Executive_KPI_Dashboard)).
+
 ---
 
 ## Overview
